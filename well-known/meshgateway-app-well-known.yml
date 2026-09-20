@@ -1,0 +1,150 @@
+generated: '2026-09-19'
+method: probed
+source: live GET of the named /.well-known/ path list on every host this record knows (meshgateway.app, www.meshgateway.app, billing.meshgateway.app)
+hit_count: 2
+note: >-
+  The only documents served under /.well-known/ are the A2A agent card (canonical /.well-known/agent-card.json
+  and legacy /.well-known/agent.json, byte-identical, on the apex and www) and the provider's own non-standard
+  /.well-known/agent-mesh discovery document, which the card's documentationUrl names — recorded here as
+  evidence-led, not as a glob hit. Every path on the closed list (security.txt, openid-configuration,
+  oauth-authorization-server, oauth-protected-resource, api-catalog, ai-plugin.json, ucp.json, acp.json,
+  aauth-resource.json, apis.json, /apis.json, /apis.yml) returned the site's plain HTML 404 on the apex and
+  www, and a JSON 404 ({"ok":false,"error":"not found"}) on billing.meshgateway.app. The negative-control path
+  404s on each host, so the two 200s are served documents and not a path-echoing catch-all. NO WellKnown or
+  SecurityTxt pointer is emitted: the well_known_catalog check reads WellKnown as an RFC 9727 api-catalog, and
+  none exists here. The agent card is credited through its own AgentCard pointer (a2a/meshgateway-app-a2a.yml).
+hosts:
+- host: https://meshgateway.app
+  path_echo_control: passed
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 2030
+    file: a2a/meshgateway-app-agent-card.json
+    note: A2A agent card, protocolVersion 0.3.0. Graded in a2a/meshgateway-app-a2a.yml.
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 2030
+    file: a2a/meshgateway-app-agent-card.json
+    note: Legacy path; byte-identical to agent-card.json.
+  - path: /.well-known/agent-mesh
+    status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 2336
+    file: well-known/meshgateway-app-agent-mesh.json
+    note: >-
+      Provider-specific discovery document (schema "agent-mesh/v0") named by the agent card's
+      documentationUrl. Not on the closed probe list; recorded because a fetched document pointed at it.
+      Documents the POST /attach join flow, its request body, success fields, error codes and the rule
+      that bot tokens are never to be sent.
+  - path: /.well-known/meshgateway-negative-control-9c2e41ab.json
+    status: 404
+    control: true
+- host: https://www.meshgateway.app
+  path_echo_control: passed
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 2030
+    file: a2a/meshgateway-app-agent-card.json
+    note: Same body as the apex; served directly, no redirect.
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 2030
+    file: a2a/meshgateway-app-agent-card.json
+  - path: /.well-known/meshgateway-negative-control-9c2e41ab.json
+    status: 404
+    control: true
+- host: https://billing.meshgateway.app
+  path_echo_control: passed
+  note: The steward_redeem host named in the agent-mesh document. Every path, including /, answers a 32-byte JSON 404; only POST /join/redeem is routed (405 to GET, {"ok":false,"error":"ticket_missing"} to an empty POST).
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/meshgateway-negative-control-9c2e41ab.json
+    status: 404
+    control: true

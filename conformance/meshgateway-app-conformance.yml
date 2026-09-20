@@ -1,0 +1,59 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/.well-known/agent-card.json
+docs:
+- https://meshgateway.app/.well-known/agent-mesh
+summary: >-
+  One standards claim, made by the provider's own document: an Agent2Agent (A2A) agent card at
+  protocolVersion 0.3.0, served at both the canonical and legacy well-known paths and graded conformant on
+  the A2A 1.0.0 hard checks (a2a/meshgateway-app-a2a.yml). The card disclaims A2A as a transport in its
+  own description and a live JSON-RPC POST to its url returned 405, so the conformance is to the discovery
+  document format only. The join flow itself follows a vendor-specific "agent-mesh/v0" schema the
+  provider defines. Nothing else is claimed or observed: no OAuth 2.0, OIDC, RFC 9728, RFC 8414, RFC 9457,
+  RFC 9116, RFC 9727, MCP, OpenAPI, AsyncAPI, JSON:API or pagination/idempotency conventions. No industry
+  regulatory standard applies to a chat-room join gateway, and none is invented here.
+standards:
+- id: a2a
+  name: Agent2Agent protocol — agent card
+  version: '0.3.0'
+  conforms: true
+  scope: discovery document only
+  evidence: >-
+    a2a/meshgateway-app-agent-card.json — protocolVersion "0.3.0", capabilities object, skills array of 2,
+    defaultInputModes/defaultOutputModes present, preferredTransport absent; served 200 application/json at
+    https://meshgateway.app/.well-known/agent-card.json and /.well-known/agent.json.
+- id: a2a-jsonrpc-transport
+  name: Agent2Agent protocol — JSON-RPC transport (message/send, tasks/get)
+  conforms: false
+  evidence: >-
+    The card's description says "Not an A2A JSON-RPC messaging endpoint — use Mesh attach, not
+    message/send". POST https://meshgateway.app/ with a JSON-RPC tasks/get returned 405
+    {"error":"method_not_allowed"} on 2026-09-19. Recorded as a non-conformance the provider discloses.
+- id: agent-mesh-v0
+  name: agent-mesh/v0 (provider-defined join protocol)
+  conforms: true
+  vendor_specific: true
+  evidence: >-
+    https://meshgateway.app/.well-known/agent-mesh declares "schema": "agent-mesh/v0"; GET /attach declares
+    "agent-mesh-attach/v0"; GET /join with Accept: application/json declares "agent-mesh-join/v0". These
+    are the provider's own schema identifiers with no published specification behind them; listed so a
+    reader knows the flow is self-described, not so it earns standards credit.
+- id: rfc9457
+  name: Problem Details for HTTP APIs
+  conforms: false
+  evidence: 'Errors are {"error":"<code>"} / {"ok":false,"error":"<code>"} — no type, title, status, detail or instance. See errors/meshgateway-app-problem-types.yml.'
+- id: rfc9116
+  name: security.txt
+  conforms: false
+  evidence: /.well-known/security.txt 404 on all three hosts.
+- id: rfc9727
+  name: api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog 404 on all three hosts.
+- id: oauth2
+  conforms: false
+  evidence: No authorization server, no oauth-authorization-server or oauth-protected-resource metadata; the only OAuth in the flow is Discord's, on discord.com.
+- id: mcp
+  conforms: false
+  evidence: /mcp and /sse 404; no MCP server is referenced by the card or the discovery document.
+domain_standard_signature: null

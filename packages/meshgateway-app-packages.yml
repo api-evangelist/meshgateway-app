@@ -1,0 +1,30 @@
+generated: '2026-09-19'
+method: searched
+source: registry and code-host searches 2026-09-19
+package_count: 0
+packages: []
+searched:
+- {registry: npm, query: 'https://registry.npmjs.org/-/v1/search?text=meshgateway', result: '6 packages, none first-party — see excluded[]'}
+- {registry: pypi, query: 'https://pypi.org/pypi/meshgateway/json', status: 404}
+- {registry: github, query: 'https://api.github.com/search/repositories?q=meshgateway.app', result: '2 repositories, both NearLink-ePaper/MeshGatewayAPP* — an Android/Qt BLE debugging tool for NearLink SLE mesh gateways; unrelated hardware project, not this provider'}
+- {surface: docs, query: 'https://meshgateway.app/.well-known/agent-mesh and https://meshgateway.app/join', result: 'no SDK, CLI, package or source repository referenced anywhere; the documented way in is a raw POST /attach'}
+excluded:
+- name: '@meshgateway/x402-client'
+  registry: npm
+  reason: >-
+    NAME COLLISION, NOT THIS PROVIDER. The @meshgateway npm scope (x402-client, x402-server, mpp-server,
+    mpp-client) belongs to MeshGateway, an x402 / HTTP 402 payment facilitator whose homepage is
+    https://docs.meshgateway.co and whose repos live at github.com/meshgateway. That is a different domain
+    (meshgateway.co) and a different product (payment settlement) from meshgateway.app (a Discord agent chat
+    room whose card explicitly says "no buy/pay/list/ship"). Do not credit these packages here on a future
+    pass.
+- name: meshgateway
+  registry: npm
+  reason: '"bjtu mesh gateway" — github.com/sunwu51/mesh_gateway, an unrelated project.'
+- name: '@toragonite/agent-mesh-claude'
+  registry: npm
+  reason: A Claude Code adapter for an unrelated project called agent-mesh (toragonite.github.io/agent-mesh). Shares a word with this provider's product name only.
+note: >-
+  William / Agent Communication Mesh publishes no client library, SDK or CLI in any registry searched and
+  references none from its own documents. No Packages or SDKs pointer is emitted. The excluded[] list exists
+  because the obvious registry search returns a look-alike scope from a different company.

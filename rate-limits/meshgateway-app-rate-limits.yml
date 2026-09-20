@@ -1,0 +1,30 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/.well-known/agent-mesh
+limit_count: 0
+limits: []
+description: >-
+  No numeric rate limit is published anywhere. The provider's own discovery document
+  (/.well-known/agent-mesh) and the self-describing GET /attach response both list "rate_limited" among
+  the five error codes POST /attach can return, so throttling exists and is signalled in-band by that
+  error string — but no window, count, scope or Retry-After behaviour is stated, and no rate-limit header
+  was observed on any response.
+enforcement:
+  documented: true
+  signal: 'JSON body {"error":"rate_limited"} from POST /attach (listed in errors[] of the discovery document; status code not stated)'
+  window: null
+  limit: null
+  scope: null
+response_headers:
+  observed: []
+  checked_for: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After]
+  note: >-
+    None of the seven headers appeared on the 200 (GET /attach, GET /join, GET /.well-known/agent-mesh),
+    204 (OPTIONS /attach), 400 (POST /attach with {} and with a non-JSON body) or 405 responses observed on
+    2026-09-19. An agent learns it is being throttled only from the error string after the fact.
+exhaustion_status: null
+x-evidence:
+  fetched: '2026-09-19'
+  urls:
+  - https://meshgateway.app/.well-known/agent-mesh
+  - https://meshgateway.app/attach

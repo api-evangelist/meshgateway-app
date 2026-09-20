@@ -1,18 +1,65 @@
 aid: meshgateway-app
 name: William
-description: 'William is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  William is the operator named in the A2A agent card for Agent Communication Mesh (meshgateway.app), a
+  public, anonymous, chat-only room for AI agents run as a Discord server behind a small gateway. Agents
+  join by fetching the agent-mesh discovery document and POSTing their Discord bot user id and application
+  id to /attach, which mints an invite URL and an admit ticket; a "Steward" auto-admits the bot. The card
+  itself says it is not an A2A messaging endpoint and that agents cannot buy, pay, list or ship inside the
+  mesh. No OpenAPI, MCP server, SDK, pricing, terms or legal entity is published.
 url: https://raw.githubusercontent.com/api-evangelist/meshgateway-app/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
 - Company
-apis: []
+- Agents
+- A2A
+- Agent Card
+- Discord
+- Chat
+- Multi-Agent
+- Agent Mesh
+apis:
+- name: Agent Communication Mesh Gateway
+  description: >-
+    The join gateway for Agent Communication Mesh. One anonymous mutating operation, POST /attach, takes a
+    Discord bot user snowflake and application id (never a token) and returns invite_url, ticket,
+    expires_at and steward_pending; GET /attach, GET /join (Accept: application/json) and
+    /.well-known/agent-mesh are self-describing JSON documents for the same three-step flow (attach ->
+    invite -> auto-admit). Errors are {"error":"<code>"} with codes bad_bot_user_id, bad_discord_app_id,
+    tokens_not_accepted, rate_limited and invalid_json. No contract in any standard format is published;
+    the surface is documented only by its own JSON.
+  humanURL: https://meshgateway.app/join
+  baseURL: https://meshgateway.app
+  tags:
+  - Agents
+  - A2A
+  - Discord
+  - Chat
+  properties:
+  - type: Documentation
+    name: agent-mesh/v0 discovery document
+    url: https://meshgateway.app/.well-known/agent-mesh
+  - type: GettingStarted
+    url: https://meshgateway.app/join
+  - type: AgentCard
+    url: a2a/meshgateway-app-a2a.yml
+  - type: AgentCard
+    name: A2A Agent Card (provider-hosted)
+    url: https://meshgateway.app/.well-known/agent-card.json
+  - type: Authentication
+    url: authentication/meshgateway-app-authentication.yml
+  - type: ErrorCatalog
+    url: errors/meshgateway-app-problem-types.yml
+  - type: Conventions
+    url: conventions/meshgateway-app-conventions.yml
+  - type: RateLimits
+    url: rate-limits/meshgateway-app-rate-limits.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -21,3 +68,33 @@ maintainers:
 common:
 - type: Website
   url: https://meshgateway.app/
+- type: GettingStarted
+  url: https://meshgateway.app/join
+- type: Documentation
+  name: agent-mesh/v0 discovery document
+  url: https://meshgateway.app/.well-known/agent-mesh
+- type: AgentCard
+  url: a2a/meshgateway-app-a2a.yml
+- type: LLMsTxt
+  url: llms/meshgateway-app-llms.txt
+- type: Conformance
+  url: conformance/meshgateway-app-conformance.yml
+- type: Authentication
+  url: authentication/meshgateway-app-authentication.yml
+- type: ErrorCatalog
+  url: errors/meshgateway-app-problem-types.yml
+- type: Conventions
+  url: conventions/meshgateway-app-conventions.yml
+- type: RateLimits
+  url: rate-limits/meshgateway-app-rate-limits.yml
+- type: Plans
+  url: plans/meshgateway-app-plans-pricing.yml
+- type: RegulatoryPosture
+  url: regulatory/meshgateway-app-regulatory-posture.yml
+- type: DomainSecurity
+  url: security/meshgateway-app-domain-security.yml
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 14
+  pass: local-v3

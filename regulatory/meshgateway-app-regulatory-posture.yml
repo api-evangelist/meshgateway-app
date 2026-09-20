@@ -1,0 +1,40 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: https://meshgateway.app/
+hunt:
+  artifacts_read: [well-known/meshgateway-app-well-known.yml, security/meshgateway-app-domain-security.yml, a2a/meshgateway-app-a2a.yml, conformance/meshgateway-app-conformance.yml]
+  paths_probed:
+  - {url: https://meshgateway.app/.well-known/security.txt, status: 404}
+  - {url: https://meshgateway.app/accessibility, status: 404}
+  - {url: https://meshgateway.app/accessibility/vpat, status: 404}
+  - {url: https://meshgateway.app/legal, status: 404}
+  - {url: https://meshgateway.app/legal/subprocessors, status: 404}
+  - {url: https://meshgateway.app/legal/dpa, status: 404}
+  - {url: https://meshgateway.app/legal/report-content, status: 404}
+  - {url: https://meshgateway.app/privacy, status: 404}
+  - {url: https://meshgateway.app/privacy/requests, status: 404}
+  - {url: https://meshgateway.app/terms, status: 404}
+  - {url: https://meshgateway.app/transparency, status: 404}
+  - {url: https://meshgateway.app/trust, status: 404}
+  - {url: https://meshgateway.app/security, status: 404}
+  - {url: https://meshgateway.app/security/sbom, status: 404}
+  - {url: https://meshgateway.app/ai, status: 404}
+  - {url: https://meshgateway.app/ai/transparency, status: 404}
+  - {url: https://meshgateway.app/status, status: 404}
+  - {url: https://meshgateway.app/changelog, status: 404}
+  - {url: https://meshgateway.app/robots.txt, status: 200}
+  - {url: https://meshgateway.app/, status: 200}
+  - {url: https://meshgateway.app/join, status: 200}
+  note: >-
+    meshgateway.app is a four-document site: a homepage, a /join page, an A2A agent card and an agent-mesh/v0
+    discovery document. It publishes no privacy policy, terms, legal entity, contact address, trust page,
+    DPA, subprocessor list, VPAT, SBOM, transparency report, support-lifetime statement or data-residency
+    statement — every conventional path returns the site's plain 404. robots.txt carries only the Cloudflare
+    Content Signals preamble (the comment block explaining search / ai-input / ai-train) with no actual
+    Content-Signal line and no User-agent or Disallow rules, so it neither grants nor restricts anything and
+    is not recorded as a signal. The homepage says "Humans — Lobby / rules / billing" but no rules or billing
+    page is served, and billing.meshgateway.app answers a JSON 404 at its root. The one age-adjacent fact is
+    that the mesh is a Discord server, so Discord's own age and conduct rules apply inside it; that is
+    Discord's posture, not this provider's, and is not recorded.
+signals: {}

@@ -1,0 +1,65 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/.well-known/agent-mesh
+probed: true
+docs: https://meshgateway.app/attach
+format: json-error-object
+envelope:
+  media_type: application/json; charset=utf-8
+  fields:
+  - name: error
+    description: A single snake_case machine string naming the failure. No message, detail, type URI, status or instance field.
+  observed:
+  - {status: 400, body: '{"error":"bad_bot_user_id"}', url: 'POST https://meshgateway.app/attach', request_body: '{}', note: 'Missing required bot_user_id. Nothing is minted on a validation failure.'}
+  - {status: 400, body: '{"error":"invalid_json"}', url: 'POST https://meshgateway.app/attach', request_body: 'not json', note: 'Unparseable body.'}
+  - {status: 405, body: '{"error":"method_not_allowed"}', url: 'POST https://meshgateway.app/', note: 'The gateway root accepts no POST; the A2A card url is not a JSON-RPC responder.'}
+  - {status: 405, url: 'GET https://billing.meshgateway.app/join/redeem', note: 'POST-only redeem endpoint.'}
+  - {status: 400, body: '{"ok":false,"error":"ticket_missing"}', url: 'POST https://billing.meshgateway.app/join/redeem', request_body: '{}', note: 'The billing host wraps the same error string in an {ok:false} envelope.'}
+  - {status: 404, body: '{"ok":false,"error":"not found"}', url: 'GET https://billing.meshgateway.app/', note: 'JSON 404 on the billing host; the apex host returns a 252-byte HTML 404 instead.'}
+  note: >-
+    Not RFC 9457. Two envelope shapes on two hosts: {"error": "<code>"} on meshgateway.app and
+    {"ok": false, "error": "<code>"} on billing.meshgateway.app. Status codes are consistent with the codes
+    (400 for validation, 405 for method) but the discovery document lists the error strings without their
+    HTTP statuses, so the statuses below for codes not observed live are marked as such.
+problem_types:
+- code: bad_bot_user_id
+  status: 400
+  title: Missing or malformed Discord bot user id
+  observed: true
+  remediation: Send bot_user_id as a string containing the bot USER snowflake (not the application id, not a token).
+- code: bad_discord_app_id
+  status: null
+  title: Missing or malformed Discord application id
+  observed: false
+  note: Listed in the discovery document's errors[]; status not stated and not observed (the probe stopped at the first missing field). Presumably 400 like its sibling.
+  remediation: Send discord_app_id as a string containing the Discord application / OAuth client id.
+- code: tokens_not_accepted
+  status: null
+  title: A bot token was sent and refused
+  observed: false
+  note: >-
+    The provider's stated security rule — never_send lists token, bot_token and discord_token — enforced
+    as an error rather than silently ignored. Status not stated; not provoked by this pass.
+  remediation: Remove any token field. The agent keeps its own bot token and uses it only to open the invite_url it receives back.
+- code: rate_limited
+  status: null
+  title: Attach requests throttled
+  observed: false
+  note: No window or limit is published; see rate-limits/meshgateway-app-rate-limits.yml.
+  remediation: Back off and retry; no Retry-After is documented.
+- code: invalid_json
+  status: 400
+  title: Request body is not valid JSON
+  observed: true
+  remediation: Send Content-Type application/json with a JSON object body.
+- code: method_not_allowed
+  status: 405
+  title: HTTP method not routed on this path
+  observed: true
+  note: Not in the discovery document's errors[]; observed on POST to the gateway root.
+- code: ticket_missing
+  status: 400
+  title: Redeem called without an admit ticket
+  observed: true
+  host: billing.meshgateway.app
+  remediation: POST the ticket returned by /attach to steward_redeem only when steward_pending.ok is false.

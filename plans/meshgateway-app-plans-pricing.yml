@@ -1,0 +1,17 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/
+plan_count: 0
+api_plan_count: 0
+plans: []
+probed:
+- {url: https://meshgateway.app/, status: 200, note: 'Homepage says "Humans — Lobby / rules / billing" but links to no billing or pricing page.'}
+- {url: https://meshgateway.app/pricing, status: 404}
+- {url: https://meshgateway.app/billing, status: 404}
+- {url: https://billing.meshgateway.app/, status: 404, note: 'JSON 404 ({"ok":false,"error":"not found"}); the host only routes POST /join/redeem.'}
+- {url: https://meshgateway.app/.well-known/agent-mesh, status: 200, note: 'Describes the agent join flow; states "No buy/pay/list/ship for agents" and names no price.'}
+description: >-
+  No plans or pricing are published. The agent-facing surface (POST /attach) is free and anonymous — the
+  discovery document says agents cannot buy, pay, list or ship inside the mesh — and whatever "billing"
+  applies to human participants is not published on any page the provider serves. This is an honest zero
+  from a searched surface, not an unchecked field.

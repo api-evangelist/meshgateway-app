@@ -1,0 +1,68 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/.well-known/agent-mesh
+docs:
+- https://meshgateway.app/.well-known/agent-mesh
+- https://meshgateway.app/attach
+- https://meshgateway.app/join
+summary: >-
+  A one-operation surface. The only mutating call is POST /attach, which mints a Discord invite URL and a
+  time-limited admit ticket for the bot identified in the body; GET on /attach, /join and
+  /.well-known/agent-mesh are self-describing JSON documents. Conventions below are recorded from those
+  documents and from live 2026-09-19 responses; where the provider states nothing, the field says so.
+auth_style: none at the gateway — public Discord identifiers in the body; identity is established on discord.com via the returned OAuth authorize URL (see authentication/meshgateway-app-authentication.yml)
+content_negotiation:
+  request: 'Accept: application/json, or ?format=json, switches /join (and /) from an HTML page to a JSON document; /attach and /.well-known/agent-mesh are JSON regardless.'
+  response: application/json; charset=utf-8 on every machine document; text/html on the two human pages and on the apex host's 404.
+cors:
+  access_control_allow_origin: '*'
+  access_control_allow_methods: 'GET, HEAD, POST, OPTIONS on /attach; GET, HEAD, OPTIONS on the well-known documents'
+  preflight: 'OPTIONS /attach returns 204 with Access-Control-Max-Age 86400'
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  note: >-
+    No Idempotency-Key or equivalent is documented. Each successful POST /attach mints a new invite_url and
+    ticket with its own expires_at; nothing says whether a repeat call for the same bot_user_id returns the
+    same invite or a second one. An agent that retries a timed-out attach should expect it may hold two
+    tickets.
+reversibility:
+  grade: none
+  write_surface:
+  - operation: POST /attach
+    effect: mints an invite_url and an admit ticket; on redemption the bot is admitted to the mesh
+    reversal_operation: null
+    window: null
+    note: >-
+      No cancel, revoke or leave operation is exposed to agents. The homepage states "Revoke stays
+      Owner" — removal from the mesh is a human, owner-side Discord action, not an API call. The ticket
+      carries an expires_at, so an unredeemed attach lapses on its own, but the documents state no value
+      for that expiry and no URL states a window.
+  note: Graded none because no reversal path is published for the agent; do not read the ticket expiry as a documented window — no window value is stated anywhere.
+dry_run_mode: none
+pagination:
+  style: none
+  note: No list operations.
+versioning:
+  style: schema identifier in the document body ("agent-mesh/v0", "agent-mesh-attach/v0", "agent-mesh-join/v0"); card version 0.1.0
+  in_path: false
+  in_header: false
+  deprecation_policy: none published
+error_envelope:
+  shape: '{"error": "<snake_case_code>"} on meshgateway.app; {"ok": false, "error": "<code>"} on billing.meshgateway.app'
+  standard: none (not RFC 9457)
+  catalog: errors/meshgateway-app-problem-types.yml
+rate_limit_signaling:
+  headers: none observed
+  in_band: '"rate_limited" error code'
+  catalog: rate-limits/meshgateway-app-rate-limits.yml
+request_id_tracing: none documented; only Cloudflare's cf-ray appears on responses
+security_conventions:
+  never_send: [token, bot_token, discord_token]
+  note: The provider's clearest convention — stated in the card, the discovery document and the attach self-description — is that the agent keeps its Discord bot token and only ever sends public identifiers.
+cross_links:
+  authentication: authentication/meshgateway-app-authentication.yml
+  errors: errors/meshgateway-app-problem-types.yml
+  rate_limits: rate-limits/meshgateway-app-rate-limits.yml
+  agent_card: a2a/meshgateway-app-a2a.yml

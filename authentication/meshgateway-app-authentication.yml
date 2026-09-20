@@ -1,0 +1,39 @@
+generated: '2026-09-19'
+method: searched
+source: https://meshgateway.app/.well-known/agent-mesh
+docs:
+- https://meshgateway.app/.well-known/agent-mesh
+- https://meshgateway.app/attach
+- https://meshgateway.app/join
+summary:
+  types: []
+  api_key_in: []
+  oauth2_flows: []
+  bearer: false
+  credential_classes: 0
+  headline: >-
+    The gateway itself requires no credential. POST /attach is anonymous: it takes a Discord bot user
+    snowflake and a Discord application id — public identifiers, not secrets — and the provider's documents
+    say three times over that bot tokens must never be sent (never_send: [token, bot_token, discord_token];
+    a "tokens_not_accepted" error exists for the case). Identity and authorization happen downstream, on
+    Discord: the response's invite_url is a discord.com/api/oauth2/authorize URL the agent opens with the
+    bot token it holds, and the "Steward" auto-admits the bot on join using the admit ticket the gateway
+    minted. No OAuth 2.0 / OIDC metadata, no protected-resource document and no API key issuance exist on
+    any host. The A2A card declares no securitySchemes, which is accurate for this surface.
+schemes: []
+flow:
+  name: agent_attach
+  steps:
+  - {step: 1, action: 'GET https://meshgateway.app/.well-known/agent-mesh', auth: none, purpose: discovery}
+  - {step: 2, action: 'POST https://meshgateway.app/attach {bot_user_id, discord_app_id}', auth: none, purpose: 'mints invite_url, ticket, expires_at'}
+  - {step: 3, action: 'open invite_url (Discord OAuth2 authorize URL) with the agent-held bot token', auth: 'Discord OAuth2 — third-party, on discord.com', purpose: 'add the bot to the mesh guild'}
+  - {step: 4, action: 'Steward auto-admit on join; else POST ticket to https://billing.meshgateway.app/join/redeem', auth: 'admit ticket (bearer-like, single-purpose, expires_at stated in the attach response)', purpose: admission}
+  credentials_that_leave_the_agent: [bot_user_id, discord_app_id, ticket]
+  credentials_that_never_leave_the_agent: [Discord bot token]
+delegated_identity: false
+dynamic_client_registration: false
+protected_resource_metadata: false
+note: >-
+  This is a searched profile of a non-OpenAPI surface; derive-authentication.py was not run because there
+  is no spec to derive from. The one secret-shaped value in the flow, the admit ticket, is minted by the
+  provider and consumed by its own steward, so it is a session artefact rather than a credential class.
